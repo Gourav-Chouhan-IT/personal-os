@@ -1,5 +1,5 @@
 // Home Dashboard — live data from /api/tasks, /api/activity, /api/tasks/overdue-check
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api/axios.js';
 
@@ -52,6 +52,16 @@ function daysLate(dueDate) {
 }
 
 const ACTION_COLOR = { created: '#00ADB5', completed: '#3ec98a', rescheduled: '#f4b740', updated: '#8a8f96', deleted: '#ef4f5e' };
+
+const SNAP_FILTER_CATS = [
+  { label: 'All',        value: null },
+  { label: 'DSA',        value: 'DSA' },
+  { label: 'Projects',   value: 'Project' },
+  { label: 'LinkedIn',   value: 'Content' },
+  { label: 'Internship', value: 'CRM' },
+  { label: 'Learning',   value: 'Personal' },
+  { label: 'Other',      value: 'Other' },
+];
 
 // ─── Skeleton placeholder ─────────────────────────────────────────────────────
 function Skel({ w = '100%', h = 14, r = 5 }) {
@@ -114,6 +124,9 @@ export default function Home() {
   const [error,          setError]          = useState(null);
   const [rescheduling,   setRescheduling]   = useState(false);
   const [bannerDismissed,setBannerDismissed]= useState(false);
+  const [filterCat,      setFilterCat]      = useState(null);
+  const [filterOpen,     setFilterOpen]     = useState(false);
+  const filterRef = useRef(null);
 
   useEffect(() => {
     setLoadingTasks(true); setLoadingActivity(true); setError(null);
@@ -140,6 +153,16 @@ export default function Home() {
       setLoadingActivity(false);
     });
   }, []);
+
+  // ── Close filter dropdown on outside click ─────────────────────────────────
+  useEffect(() => {
+    if (!filterOpen) return;
+    const handle = (e) => {
+      if (filterRef.current && !filterRef.current.contains(e.target)) setFilterOpen(false);
+    };
+    document.addEventListener('mousedown', handle);
+    return () => document.removeEventListener('mousedown', handle);
+  }, [filterOpen]);
 
   // ── Reschedule all suggestions ─────────────────────────────────────────────
   const handleRescheduleAll = async () => {
@@ -183,6 +206,7 @@ export default function Home() {
   const atRiskGoals   = goals.filter(g => g.status === 'At Risk' || g.status === 'Delayed');
 
   const overdueCount = tasks.filter(t => t.status !== 'Done' && t.dueDate && new Date(t.dueDate) < new Date()).length;
+  const snapFilter   = (t) => !filterCat || t.category === filterCat.value;
 
   const summary = [
     { label: 'Tasks Pending',     value: loadingTasks ? '…' : String(pending),            delta: `${overdueCount} overdue`,     deltaColor: overdueCount > 0 ? '#ef4f5e' : '#8a8f96', sub: `${tasks.filter(t=>t.status==='In Progress').length} in progress`, icon: Icons.tasks, link: '/tasks' },
@@ -198,16 +222,19 @@ export default function Home() {
 
   const overdueItems  = tasks
     .filter(t => t.status !== 'Done' && t.dueDate && new Date(t.dueDate) < todayStart)
+    .filter(snapFilter)
     .slice(0, 3)
     .map(t => ({ t: t.title, meta: t.category, age: `${daysLate(t.dueDate)} days late` }));
 
   const dueTodayItems = tasks
     .filter(t => t.status !== 'Done' && t.dueDate && new Date(t.dueDate) >= todayStart && new Date(t.dueDate) <= todayEnd)
+    .filter(snapFilter)
     .slice(0, 3)
     .map(t => ({ t: t.title, meta: t.category, age: formatDate(t.dueDate) }));
 
   const upcomingItems = tasks
     .filter(t => t.status !== 'Done' && t.dueDate && new Date(t.dueDate) > todayEnd && new Date(t.dueDate) <= nextWeekEnd)
+    .filter(snapFilter)
     .slice(0, 3)
     .map(t => ({ t: t.title, meta: t.category, age: formatDate(t.dueDate) }));
 
@@ -296,9 +323,48 @@ export default function Home() {
                 </span>
               </div>
               <div style={{ display: 'flex', gap: 8 }}>
-                <button style={{ display: 'inline-flex', alignItems: 'center', gap: 7, background: '#393E46', color: '#a7adb4', border: '1px solid #454a52', borderRadius: 8, padding: '7px 11px', cursor: 'pointer', fontSize: 13, fontWeight: 500 }}>
-                  {Icons.filter} Filter
-                </button>
+                <div ref={filterRef} style={{ position: 'relative' }}>
+                  <button
+                    onClick={() => setFilterOpen(o => !o)}
+                    style={{
+                      display: 'inline-flex', alignItems: 'center', gap: 7,
+                      background: filterCat ? 'rgba(0,173,181,.1)' : '#393E46',
+                      color: filterCat ? '#00ADB5' : '#a7adb4',
+                      border: `1px solid ${filterCat ? '#00ADB5' : '#454a52'}`,
+                      borderRadius: 8, padding: '7px 11px', cursor: 'pointer', fontSize: 13, fontWeight: 500,
+                    }}
+                  >
+                    {Icons.filter}{filterCat ? ` Filter · ${filterCat.label}` : ' Filter'}
+                  </button>
+                  {filterOpen && (
+                    <div style={{
+                      position: 'absolute', top: 'calc(100% + 4px)', right: 0,
+                      background: '#2c313a', border: '1px solid #454a52', borderRadius: 8,
+                      zIndex: 100, minWidth: 150, boxShadow: '0 4px 16px rgba(0,0,0,.4)',
+                      overflow: 'hidden',
+                    }}>
+                      {SNAP_FILTER_CATS.map(cat => {
+                        const isSelected = (filterCat?.value ?? null) === cat.value;
+                        return (
+                          <button
+                            key={cat.label}
+                            onClick={() => { setFilterCat(cat.value === null ? null : cat); setFilterOpen(false); }}
+                            style={{
+                              display: 'flex', alignItems: 'center', gap: 8, width: '100%',
+                              padding: '9px 14px', border: 'none', textAlign: 'left', cursor: 'pointer',
+                              background: isSelected ? 'rgba(0,173,181,.1)' : 'transparent',
+                              color: isSelected ? '#00ADB5' : '#a7adb4',
+                              fontSize: 13,
+                            }}
+                          >
+                            {cat.label}
+                            {isSelected && <span style={{ marginLeft: 'auto', fontSize: 11 }}>✓</span>}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
                 <Link to="/tasks" style={{ textDecoration: 'none' }}>
                   <button style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: '#00ADB5', color: '#06222a', fontWeight: 600, fontSize: 13, border: '1px solid #00ADB5', borderRadius: 8, padding: '8px 14px', cursor: 'pointer', boxShadow: '0 1px 0 rgba(0,0,0,.25), inset 0 -1px 0 rgba(0,0,0,.2)' }}>
                     {Icons.plus} Add task
@@ -324,7 +390,9 @@ export default function Home() {
                 <h3 style={{ margin: 0, fontSize: 14, fontWeight: 600, color: '#EEEEEE' }}>Recent activity</h3>
                 <span className="mono" style={{ fontSize: 11, color: '#8a8f96' }}>last 20</span>
               </div>
-              <span className="mono" style={{ fontSize: 11, color: '#00ADB5', cursor: 'pointer' }}>view all →</span>
+              <Link to="/activity" style={{ textDecoration: 'none' }}>
+                <span className="mono" style={{ fontSize: 11, color: '#00ADB5', cursor: 'pointer' }}>view all →</span>
+              </Link>
             </div>
 
             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0, overflow: 'hidden' }}>

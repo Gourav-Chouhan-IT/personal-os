@@ -14,6 +14,7 @@ import ContentCalendar from './pages/ContentCalendar';
 import Goals from './pages/Goals';
 import GeminiChat from './pages/GeminiChat';
 import Settings from './pages/Settings';
+import ActivityLog from './pages/ActivityLog';
 
 function AppLoader() {
   return (
@@ -58,6 +59,7 @@ export default function App() {
               <Route path="/goals"      element={<Goals />} />
               <Route path="/chat"       element={<GeminiChat />} />
               <Route path="/settings"   element={<Settings />} />
+              <Route path="/activity"  element={<ActivityLog />} />
             </Route>
           </Route>
 

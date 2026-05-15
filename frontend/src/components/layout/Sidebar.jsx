@@ -21,6 +21,7 @@ const Icons = {
   goals:   <Icon d={<><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></>} />,
   chat:    <Icon d={<><path d="M4 5h16v11H9l-5 4V5z"/><path d="M8 10h.01M12 10h.01M16 10h.01"/></>} sw={1.8} />,
   settings:<Icon d={<><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.8L4.2 7a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></>} sw={1.4} />,
+  activity:<Icon d={<><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 14.5"/></>} />,
   logout:  <Icon d={<><path d="M9 4H5v16h4"/><path d="M16 16l4-4-4-4"/><path d="M20 12H10"/></>} />,
 };
 
@@ -34,6 +35,7 @@ const NAV = [
   { id: 'goals',     path: '/goals',      label: 'Goals & Roadmap',  icon: Icons.goals },
   { id: 'chat',      path: '/chat',       label: 'Gemini Chat',      icon: Icons.chat },
   { id: 'settings',  path: '/settings',   label: 'Settings',         icon: Icons.settings },
+  { id: 'activity',  path: '/activity',   label: 'Activity',         icon: Icons.activity },
 ];
 
 export default function Sidebar() {
