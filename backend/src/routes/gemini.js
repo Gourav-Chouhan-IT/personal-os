@@ -18,9 +18,9 @@ router.use(protect);
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
 async function getGeminiKey() {
-  if (process.env.GEMINI_API_KEY) return process.env.GEMINI_API_KEY;
   const cfg = await Config.findOne({ key: 'GEMINI_API_KEY' });
-  return cfg?.value || null;
+  if (cfg?.value) return cfg.value;
+  return process.env.GEMINI_API_KEY || null;
 }
 
 async function buildLiveContext() {
