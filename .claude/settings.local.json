@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(New-Item *)",
+      "Bash(Get-ChildItem -Path \"D:\\\\Webdev Projects\\\\personal_os\\\\frontend\" -Recurse -File)",
+      "Bash(Sort-Object FullName)",
+      "Bash(Select-Object FullName)",
+      "Bash(Format-Table -AutoSize)",
+      "PowerShell(Get-ChildItem -Path \"D:\\\\Webdev Projects\\\\personal_os\\\\frontend\" -Recurse -File | Sort-Object FullName | ForEach-Object { $_.FullName })",
+      "WebFetch(domain:api.anthropic.com)",
+      "Bash(python -c ' *)",
+      "Bash(python *)",
+      "Bash(Get-ChildItem -Path \"D:\\\\Webdev Projects\\\\personal_os\\\\backend\" -Recurse -Force)",
+      "Bash(Select-Object -Property FullName, PSIsContainer)",
+      "Bash(npm install *)",
+      "Bash(node --check src/routes/gemini.js)",
+      "Bash(node --check src/pages/GeminiChat.jsx)",
+      "Bash(node --check src/pages/Settings.jsx)",
+      "Bash(timeout 8 npm start)",
+      "Bash(npm run *)",
+      "Bash(node --check src/models/GeminiSession.js)",
+      "Bash(dir \"D:/Webdev Projects/personal_os/frontend/src\" /b)",
+      "Bash(dir \"D:/Webdev Projects/personal_os/frontend\" /b)",
+      "Bash(dir *)",
+      "Bash(node --check src/routes/settings.js)",
+      "Bash(node --check src/server.js)"
+    ]
+  }
+}

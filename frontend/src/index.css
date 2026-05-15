@@ -1,0 +1,84 @@
+/* Global styles — Tailwind v4 import + custom palette for Personal OS */
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #222831;
+  --color-secondary: #393E46;
+  --color-accent: #00ADB5;
+  --color-foreground: #EEEEEE;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  font-family: 'Geist', system-ui, -apple-system, sans-serif;
+  font-feature-settings: "ss01", "cv11";
+  background-color: #222831;
+  color: #EEEEEE;
+  -webkit-font-smoothing: antialiased;
+}
+
+.mono {
+  font-family: 'Geist Mono', ui-monospace, monospace;
+  font-feature-settings: "zero";
+}
+
+/* ── Mobile responsive helpers ───────────────────────────────────────────── */
+/* Horizontal-scroll wrappers (kanban, tables, gantt) */
+.scroll-x { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+@media (max-width: 768px) {
+  /* Reduce outer page padding on narrow screens */
+  .page-pad { padding: 14px 16px 24px !important; }
+
+  /* Kanban grid: become a scrollable row, each column has fixed min-width */
+  .kanban-scroll { overflow-x: auto; }
+  .kanban-grid   { min-width: 620px; }
+
+  /* CRM stats bar: 2 columns */
+  .crm-stats { grid-template-columns: repeat(2, 1fr) !important; }
+
+  /* Tab bar: horizontal scroll instead of clipping */
+  .tab-bar { overflow-x: auto; white-space: nowrap; }
+  .tab-bar > button { display: inline-flex; }
+
+  /* DSA mobile: hide sidebar, show chip row */
+  .dsa-sidebar-desktop { display: none !important; }
+  .dsa-chips-mobile    { display: flex !important; }
+  .dsa-layout          { flex-direction: column !important; }
+
+  /* Sidebar: hide on mobile, full-screen overlay */
+  aside.app-sidebar { position: fixed; left: 0; top: 0; height: 100%; z-index: 100; transform: translateX(-100%); transition: transform 200ms; }
+  aside.app-sidebar.open { transform: translateX(0); }
+}
+
+@media (max-width: 640px) {
+  /* Extra-small: tighter padding */
+  .page-pad { padding: 10px 12px 20px !important; }
+  .crm-stats { grid-template-columns: 1fr 1fr !important; }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #222831;
+}
+::-webkit-scrollbar-thumb {
+  background: #393E46;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #00ADB5;
+}
