@@ -23,7 +23,8 @@
       "Bash(dir \"D:/Webdev Projects/personal_os/frontend\" /b)",
       "Bash(dir *)",
       "Bash(node --check src/routes/settings.js)",
-      "Bash(node --check src/server.js)"
+      "Bash(node --check src/server.js)",
+      "Bash(python3 -c ' *)"
     ]
   }
 }
