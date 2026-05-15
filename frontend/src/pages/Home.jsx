@@ -243,7 +243,13 @@ export default function Home() {
 
   return (
     <>
-      <style>{`@keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}`}</style>
+      <style>{`
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
+        .home-activity-scroll::-webkit-scrollbar{width:4px}
+        .home-activity-scroll::-webkit-scrollbar-track{background:#2c313a;border-radius:2px}
+        .home-activity-scroll::-webkit-scrollbar-thumb{background:rgba(0,173,181,.45);border-radius:2px}
+        .home-activity-scroll::-webkit-scrollbar-thumb:hover{background:rgba(0,173,181,.75)}
+      `}</style>
       <div style={{ padding: '22px 32px 28px', display: 'flex', flexDirection: 'column', gap: 18, height: '100%', boxSizing: 'border-box' }}>
 
         {/* Error banner */}
@@ -395,40 +401,42 @@ export default function Home() {
               </Link>
             </div>
 
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0, overflow: 'hidden' }}>
-              {loadingActivity ? (
-                [1,2,3,4,5].map(i => (
-                  <div key={i} style={{ padding: '12px 2px', borderTop: i > 1 ? '1px solid #2c313a' : 'none', display: 'flex', gap: 12 }}>
-                    <Skel w={8} h={8} r="50%" />
-                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 5 }}>
-                      <Skel w="80%" h={12} />
-                      <Skel w="40%" h={9} />
-                    </div>
-                  </div>
-                ))
-              ) : activity.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '28px 0', color: '#8a8f96', fontSize: 12 }}>
-                  No activity yet — start adding tasks!
-                </div>
-              ) : (
-                activity.slice(0, 8).map((a, i) => (
-                  <div key={a._id || i} style={{ display: 'grid', gridTemplateColumns: '14px 1fr auto', gap: 12, padding: '11px 2px', borderTop: i ? '1px solid #2c313a' : 'none', alignItems: 'flex-start' }}>
-                    <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 5 }}>
-                      <span style={{ width: 8, height: 8, borderRadius: '50%', background: ACTION_COLOR[a.action] || '#8a8f96', flexShrink: 0, boxShadow: `0 0 0 3px ${ACTION_COLOR[a.action] || '#8a8f96'}22` }} />
-                    </div>
-                    <div style={{ minWidth: 0 }}>
-                      <div style={{ fontSize: 13, color: '#EEEEEE', lineHeight: 1.4, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{a.description}</div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 3 }}>
-                        <span className="mono" style={{ fontSize: 10, color: ACTION_COLOR[a.action] || '#8a8f96', letterSpacing: 0.6, textTransform: 'uppercase' }}>{a.action}</span>
-                        <span className="mono" style={{ fontSize: 10.5, color: '#8a8f96' }}>{timeAgo(a.createdAt)}</span>
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+              <div className="home-activity-scroll" style={{ overflowY: 'auto', maxHeight: 400 }}>
+                {loadingActivity ? (
+                  [1,2,3,4,5].map(i => (
+                    <div key={i} style={{ padding: '12px 2px', borderTop: i > 1 ? '1px solid #2c313a' : 'none', display: 'flex', gap: 12 }}>
+                      <Skel w={8} h={8} r="50%" />
+                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 5 }}>
+                        <Skel w="80%" h={12} />
+                        <Skel w="40%" h={9} />
                       </div>
                     </div>
+                  ))
+                ) : activity.length === 0 ? (
+                  <div style={{ textAlign: 'center', padding: '28px 0', color: '#8a8f96', fontSize: 12 }}>
+                    No activity yet — start adding tasks!
                   </div>
-                ))
-              )}
+                ) : (
+                  activity.slice(0, 8).map((a, i) => (
+                    <div key={a._id || i} style={{ display: 'grid', gridTemplateColumns: '14px 1fr auto', gap: 12, padding: '11px 2px', borderTop: i ? '1px solid #2c313a' : 'none', alignItems: 'flex-start' }}>
+                      <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 5 }}>
+                        <span style={{ width: 8, height: 8, borderRadius: '50%', background: ACTION_COLOR[a.action] || '#8a8f96', flexShrink: 0, boxShadow: `0 0 0 3px ${ACTION_COLOR[a.action] || '#8a8f96'}22` }} />
+                      </div>
+                      <div style={{ minWidth: 0 }}>
+                        <div style={{ fontSize: 13, color: '#EEEEEE', lineHeight: 1.4, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{a.description}</div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 3 }}>
+                          <span className="mono" style={{ fontSize: 10, color: ACTION_COLOR[a.action] || '#8a8f96', letterSpacing: 0.6, textTransform: 'uppercase' }}>{a.action}</span>
+                          <span className="mono" style={{ fontSize: 10.5, color: '#8a8f96' }}>{timeAgo(a.createdAt)}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
 
               {!loadingActivity && activity.length > 0 && (
-                <div style={{ marginTop: 'auto', paddingTop: 12, borderTop: '1px solid #2c313a', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ marginTop: 12, paddingTop: 12, borderTop: '1px solid #2c313a', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ fontSize: 12, color: '#a7adb4' }}><b style={{ color: '#EEEEEE' }}>{activity.length}</b> events total</span>
                   <span className="mono" style={{ fontSize: 11, color: '#8a8f96' }}>tasks · crm · dsa</span>
                 </div>
