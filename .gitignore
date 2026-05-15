@@ -4,3 +4,6 @@ dist/
 build/
 .DS_Store
 *.log
+backend/.env
+frontend/.env
+frontend/.env.local
